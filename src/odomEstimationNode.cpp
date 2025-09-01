@@ -61,6 +61,11 @@ double total_error=0.0;
 int total_error_count=1;
 Eigen::Isometry3d init_pose = Eigen::Isometry3d::Identity();
 void odom_estimation(){
+    // Add these above your loop
+Eigen::Vector3d last_translation = Eigen::Vector3d::Zero();
+Eigen::Quaterniond last_rotation(1,0,0,0);
+
+
     while(1){
         if(!pointCloudEdgeBuf.empty() && !pointCloudSurfBuf.empty()&& !pointCloudBuf.empty()){
 
@@ -122,10 +127,29 @@ void odom_estimation(){
             //q_current.normalize();
             Eigen::Vector3d t_current = odomEstimation.odom.translation();
 
+// Inside your loop, after updating t_current and q_current:
+bool pose_changed = (last_translation != t_current) || 
+                    (last_rotation.x() != q_current.x() || 
+                     last_rotation.y() != q_current.y() || 
+                     last_rotation.z() != q_current.z() || 
+                     last_rotation.w() != q_current.w());
+
+if (pose_changed) {
+    static tf::TransformBroadcaster br;
+    tf::Transform transform;
+    transform.setOrigin(tf::Vector3(t_current.x(), t_current.y(), t_current.z()));
+    tf::Quaternion q(q_current.x(), q_current.y(), q_current.z(), q_current.w());
+    transform.setRotation(q);
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "base_link"));
+
+    last_translation = t_current;
+    last_rotation = q_current;
+}
+
             // publish odometry
             nav_msgs::Odometry laserOdometry;
-            laserOdometry.header.frame_id = "/map"; 
-            laserOdometry.child_frame_id = "/base_link"; 
+            laserOdometry.header.frame_id = "map"; 
+            laserOdometry.child_frame_id = "base_link"; 
             laserOdometry.header.stamp = pointcloud_time;
             laserOdometry.pose.pose.orientation.x = q_current.x();
             laserOdometry.pose.pose.orientation.y = q_current.y();

@@ -100,7 +100,7 @@ void laser_mapping(){
                 sensor_msgs::PointCloud2 PointsMsg;
                 pcl::toROSMsg(*pc_map, PointsMsg);
                 PointsMsg.header.stamp = pointcloud_time;
-                PointsMsg.header.frame_id = "/map";
+                PointsMsg.header.frame_id = "map";
                 map_pub.publish(PointsMsg); 
             }
             //ROS_WARN("curent frame_%d", total_frame);

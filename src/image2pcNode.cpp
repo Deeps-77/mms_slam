@@ -605,18 +605,18 @@ void image2pc(){
             //pcl::toROSMsg(*static_pc, static_pc_msg);
             pcl::toROSMsg(*static_pc, static_pc_msg);
             static_pc_msg.header.stamp = pointcloud_time;
-            static_pc_msg.header.frame_id = "/camera_depth_optical_frame";
+            static_pc_msg.header.frame_id = "camera_depth_optical_frame";
             pubStaticPointCloud.publish(static_pc_msg);
             
             //dynamic pc
             sensor_msgs::PointCloud2 dynamic_pc_msg;
             pcl::toROSMsg(*dynamic_pc + *bounding_box_pc, dynamic_pc_msg);
             dynamic_pc_msg.header.stamp = pointcloud_time;
-            dynamic_pc_msg.header.frame_id = "/camera_depth_optical_frame";
+            dynamic_pc_msg.header.frame_id = "camera_depth_optical_frame";
             pubDynamicPointCloud.publish(dynamic_pc_msg);
 
             cv_bridge::CvImage out_msg;
-            out_msg.header.frame_id  = "/camera_depth_optical_frame"; 
+            out_msg.header.frame_id  = "camera_depth_optical_frame"; 
             out_msg.header.stamp  = pointcloud_time; 
             out_msg.encoding = sensor_msgs::image_encodings::MONO8; 
             out_msg.image    = dilated_image; 
