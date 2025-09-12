@@ -3,8 +3,6 @@
 
 This code is modified from [SSL_SLAM](https://github.com/wh200720041/ssl_slam) 
 
-**Modifier:** [Wang Han](http://wanghan.pro), Nanyang Technological University, Singapore
-
 [Update] AGV dataset is available online! (optional)
 
 ## 1. Solid-State Lidar Sensor Example
