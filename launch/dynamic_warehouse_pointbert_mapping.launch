@@ -1,0 +1,48 @@
+<launch>
+  <arg name="bag" default="/mnt/d/dynamic_warehouse.bag"/>
+  <arg name="play_rate" default="1.0"/>
+  <arg name="use_solo_dynamic_filter" default="false"/>
+  <arg name="rgbd_topic" default="/camera/depth/color/points"/>
+  <arg name="rgb_topic" default="/camera/color/image_raw"/>
+  <arg name="frame_id" default="base_link"/>
+
+  <param name="/use_sim_time" value="true"/>
+
+  <node pkg="rosbag" type="play" name="bag_play"
+        args="--clock -r $(arg play_rate) $(arg bag)" output="screen"/>
+
+  <group unless="$(arg use_solo_dynamic_filter)">
+    <node pkg="topic_tools" type="relay" name="relay_rgbd_to_static"
+          args="$(arg rgbd_topic) /filtered_points_static" output="screen"/>
+  </group>
+
+  <group if="$(arg use_solo_dynamic_filter)">
+    <node pkg="mms_slam" type="solo_node.py" name="solo_node" output="screen">
+      <param name="~root_path" value="$(find mms_slam)/"/>
+      <param name="~model_path" value="dependency/weights/solov2.pth"/>
+      <param name="~config_path" value="config/training_param.py"/>
+      <remap from="~input" to="$(arg rgb_topic)"/>
+      <param name="~visualization" value="true"/>
+    </node>
+    <node pkg="mms_slam" type="mms_slam_image2pc_node" name="image2pc" output="screen"/>
+  </group>
+
+  <node pkg="mms_slam" type="mms_slam_laser_processing_node" name="laser_processing" output="screen">
+    <param name="scan_period" value="0.033"/>
+    <param name="vertical_angle" value="2.0"/>
+    <param name="max_dis" value="20.0"/>
+    <param name="min_dis" value="0.3"/>
+    <param name="scan_line" value="64"/>
+  </node>
+  <node pkg="mms_slam" type="mms_slam_odom_estimation_node" name="odom_estimation" output="screen"/>
+  <node pkg="mms_slam" type="mms_slam_laser_mapping_node" name="laser_mapping" output="screen"/>
+
+  <rosparam file="$(find mms_slam)/config/pointbert_params.yaml" command="load"/>
+  <node pkg="mms_slam" type="steal_pointbert" name="steal_pointbert" output="screen">
+    <param name="module_hint" value="models.point_bert"/>
+    <param name="device" value="cuda:0"/>
+  </node>
+
+  <node pkg="rviz" type="rviz" name="rviz"
+        args="-d $(find mms_slam)/rviz/dynamic_warehouse_pointbert.rviz" required="false"/>
+</launch>

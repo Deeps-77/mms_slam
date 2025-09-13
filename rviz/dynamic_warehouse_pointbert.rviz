@@ -1,0 +1,73 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz/Grid
+      Enabled: true
+      Name: Grid
+      Cell Size: 1
+      Plane Cell Count: 50
+      Color: 160; 160; 160
+    - Class: rviz/TF
+      Enabled: true
+      Name: TF
+      Show Axes: true
+      Show Names: true
+    - Alpha: 1
+      Class: rviz/PointCloud2
+      Name: static
+      Topic: /filtered_points_static
+      Color Transformer: RGB8
+      Size (m): 0.01
+      Style: Points
+      Enabled: true
+    - Alpha: 0.7
+      Class: rviz/PointCloud2
+      Name: filtered
+      Topic: /laser_points_filtered
+      Color Transformer: RGB8
+      Size (m): 0.01
+      Style: Points
+      Enabled: true
+    - Alpha: 1
+      Class: rviz/PointCloud2
+      Name: edge
+      Topic: /laser_cloud_edge
+      Color Transformer: FlatColor
+      Color: 255; 0; 0
+      Size (m): 0.02
+      Style: Points
+      Enabled: true
+    - Alpha: 1
+      Class: rviz/PointCloud2
+      Name: surf
+      Topic: /laser_cloud_surf
+      Color Transformer: FlatColor
+      Color: 0; 255; 0
+      Size (m): 0.02
+      Style: Points
+      Enabled: true
+    - Class: rviz/Path
+      Name: trajectory
+      Topic: /mms_slam/trajectory
+      Color: 25; 255; 0
+      Enabled: true
+    - Class: rviz/MarkerArray
+      Name: loop_candidates
+      Topic: /steal/loop_candidates
+      Enabled: true
+    - Class: rviz/MarkerArray
+      Name: loop_verified
+      Topic: /steal/loop_verified
+      Enabled: true
+  Global Options:
+    Fixed Frame: base_link
+    Background Color: 48; 48; 48
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 10
+      Pitch: 0.5
+      Yaw: 0.5
