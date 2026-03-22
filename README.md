@@ -1,11 +1,5 @@
 # MMS-SLAM
-## Multi-modal semantic SLAM in dynamic environments (Intel Realsense L515 as an example)
-
-This code is modified from [SSL_SLAM](https://github.com/wh200720041/ssl_slam) 
-
-**Modifier:** [Wang Han](http://wanghan.pro), Nanyang Technological University, Singapore
-
-[Update] AGV dataset is available online! (optional)
+## Multi-modal semantic SLAM in dynamic environments 
 
 ## 1. Solid-State Lidar Sensor Example
 ### 1.1 Scene Reconstruction in Dynamic Environments
@@ -136,67 +130,6 @@ if ModuleNotFoundError: No module named 'alfred', install alfrey-py from pip ins
 ```
 pip install alfred-py
 ```
-
-## 4. Sensor Setup
-If you have new Realsense L515 sensor, you may follow the below setup instructions
-
-### 4.1 L515
-<p align='center'>
-<img width="35%" src="/img/realsense_L515.jpg"/>
-</p>
-
-### 4.2 Librealsense
-Follow [Librealsense Installation](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
-
-### 4.3 Realsense_ros
-Copy [realsense_ros](https://github.com/IntelRealSense/realsense-ros) package to your catkin folder
-```
-    cd ~/catkin_ws/src
-    git clone https://github.com/IntelRealSense/realsense-ros.git
-    cd ..
-    catkin_make
-```
-
-### 4.4 Launch ROS with live L515 camera data
-In you launch file, uncomment realsense node like this 
-```
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-        <arg name="color_width" value="1280" />
-        <arg name="color_height" value="720" />
-        <arg name="filters" value="pointcloud" />
-    </include>
-```
-and comment rosbag play like this 
-```
-<!-- rosbag
-    <node name="bag" pkg="rosbag" type="play" args="- -clock -r 0.4 -d 5 $(env HOME)/Downloads/dynamic_warehouse.bag" />
-    <param name="/use_sim_time" value="true" />  
--->
-```
-
-## 6 Training on AGV & Human dataset
-### 6.1
-The human data are collected from COCO dataset [train2017.zip](http://images.cocodataset.org/zips/train2017.zip)(18G) and [val_2017.zip](http://images.cocodataset.org/zips/val2017.zip)(1G)
-The AGV data are manually collected and labelled [Download](https://drive.google.com/file/d/1iiPo3WzHleqn-vBoo7GctPQ1ndyUIj5_/view?usp=sharing)(1G)
-```
-cd ~/Downloads
-unzip train2017.zip
-unzip val2017.zip
-unzip agv_data.zip
-mv ~/Downloads/train2017 ~/Downloads/train_data
-mv ~/Downloads/val2017 ~/Downloads/train_data
-mv ~/Downloads/train_data/agv_data/* ~/Downloads/train_data/train2017
-```
-note that it takes a while to unzip
-
-to train a model
-```
-roscd mms_slam
-cd train
-python train.py train_param.py
-```
-if you have multiple gpu (say 4 gpus), you can change '1' to your GPU number
-The trained model is under mms_slam/train/work_dirs/xxx.pth, 
 
 
 ## 7 Acknowlegement
