@@ -1,0 +1,43 @@
+pointbert:
+  repo_path: "/mnt/g/Point-BERT"
+  checkpoint: "/mnt/g/pointbert_ckpts/point-bert.pth"
+  dvae_ckpt: "/mnt/g/pointbert_ckpts/dvae.pth"
+  module_hint: "models.point_bert"
+  device: "cuda:0"
+  num_points: 1024
+  normalize: true
+  voxel_size: 0.05
+
+geometric:
+  type: "FPFH"
+  voxel_size: 0.05
+
+keyframes:
+  min_dist: 0.20
+  min_deg: 10
+  min_time_s: 0.5
+
+fusion:
+  method: "weighted_sum"
+  w_geom: 0.4
+  w_bert: 0.6
+  normalize_similarities: true
+
+loop_closure:
+  search_k: 50
+  sim_thresh: 0.55
+  temporal_ignore_s: 10
+  icp_max_correspondence: 0.20
+  icp_max_iters: 50
+  icp_fitness_min: 0.5
+  icp_rmse_max: 0.05
+  max_closures_per_kf: 2
+  add_if_verified: true
+
+topics:
+  input_static: "/filtered_points_static"
+  out_geom_desc: "/steal/geometric_descriptor"
+  out_bert_desc: "/steal/pointbert_descriptor"
+  out_fused_desc: "/steal/fused_descriptor"
+  loop_candidates: "/steal/loop_candidates"
+  loop_verified: "/steal/loop_verified"
